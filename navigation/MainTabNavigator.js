@@ -1,8 +1,34 @@
 import HomePage from "../pages/HomePage";
 import SettingsPage from "../pages/SettingsPage";
+import FavoritesPage from "../pages/FavoritesPage";
+import FavoritesAddPage from "../pages/FavoritesAddPage";
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import React from 'react';
+import { createStackNavigator } from "react-navigation-stack";
+
+const favoritesNavigator = 
+    createStackNavigator({
+        Favorites:{
+            screen:FavoritesPage
+        },
+        FavoritesAdd:{
+            screen:FavoritesAddPage
+        }
+    },
+    {
+        initialRouteName:'Favorites',
+        defaultNavigationOptions:{
+            headerStyle: {
+                backgroundColor:'white',
+            },
+            headerTintColor:'black',
+            headerTitleStyle:{
+                fontWeight: 'bold'
+            }
+        }
+    }
+);
 
 const tabNavigator = createMaterialBottomTabNavigator(
     {
@@ -26,9 +52,19 @@ const tabNavigator = createMaterialBottomTabNavigator(
                 barStyle: { backgroundColor: 'white' }
             }
         },
+        Favorites: { 
+            screen: favoritesNavigator,
+            navigationOptions:{
+                tabBarLabel: 'Favoris',
+                tabBarIcon:({tintColor}) =>(
+                    <Icon color={tintColor} size={25} name={'ios-star'} />
+                ),
+                barStyle: { backgroundColor: 'white' }
+            }
+        }
     },
     { 
-        initialRouteName: 'Home',
+        initialRouteName: 'Favorites',
         activeColor:'black',
         inactiveColor:'grey',
     }

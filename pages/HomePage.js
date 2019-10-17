@@ -26,18 +26,15 @@ class HomePage extends React.Component{
             this.state.weather != null ?
                 this.state.page == 'default' ? 
                     (        
-                        <LinearGradient
-                                colors={['#336eb0', '#5791e7', '#5791e7']}
-                                style={{ padding: 15, alignItems: 'center', borderRadius: 5,flex:1,justifyContent:"center" }}>
-                            <TouchableOpacity onPress={() => this.setState({page:'description'})}>
-                            <Text style={{textAlign:"center",fontSize:25,color:"white"}}>{this.state.weather.weather[0].main}</Text>
-                            <ImgWeather icon={this.state.weather.weather[0].icon}/>
-                            <Text style={{fontSize:20,textAlign:"center",color:"white"}}>{this.state.weather.main.temp}°C</Text> 
+                        <LinearGradient style={{flex:1}} colors={['#336eb0', '#5791e7', '#5791e7']}>
+                            <TouchableOpacity style={{padding: 15, alignItems: 'center',flex:1,justifyContent:"center"}} onPress={() => this.setState({page:'description'})}>
+                                <Text style={{textAlign:"center",fontSize:25,color:"white"}}>{this.state.weather.weather[0].main}</Text>
+                                <ImgWeather icon={this.state.weather.weather[0].icon}/>
+                                <Text style={{fontSize:20,textAlign:"center",color:"white"}}>{this.state.weather.main.temp}°C</Text> 
                             </TouchableOpacity>
                         </LinearGradient>
                     ):(
                         <TouchableOpacity style={{flex:1, justifyContent:"center"}} onPress={() => this.setState({page:'default'})}>
-                            {/* <Text style={{textAlign:"center",fontSize:25}}>{this.state.weather.weather[0].description}</Text> */}
                             <Text style={{fontSize:20,textAlign:"center"}}>Minimale : {this.state.weather.main.temp_min}°C</Text>
                             <Text style={{fontSize:20,textAlign:"center"}}>Maximale : {this.state.weather.main.temp_max}°C</Text>
                             <Text style={{fontSize:20,textAlign:"center"}}>pression : {this.state.weather.main.pressure}°C</Text>
@@ -46,7 +43,9 @@ class HomePage extends React.Component{
                             <Sunset time={this.state.weather.sys.sunset}/>
                         </TouchableOpacity>
                 ):(
-                    <LoadingComponent name="vie"></LoadingComponent>
+                    <LoadingComponent displayColor="grey">
+                        <Text>Chargement</Text>
+                    </LoadingComponent>
                 )
         );
     }

@@ -8,7 +8,6 @@ class Loading extends React.Component {
     }
 
     render(){
-        // alert(this.props.name); 
         return(
             <View style={{flex: 1,justifyContent:'center',alignItems:'center'}}>
                 <ActivityIndicator color={this.props.displayColor } size='large'/>
