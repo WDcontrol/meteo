@@ -1,7 +1,6 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {Text, TouchableOpacity, Image} from 'react-native';
 import WeatherService from '../services/weather-service';
-import Icon from 'react-native-vector-icons/Ionicons';
 import LoadingComponent from '../components/Loading';
 import {LinearGradient} from 'expo-linear-gradient';
 
@@ -14,7 +13,7 @@ class HomePage extends React.Component{
     };
 
     componentDidMount(){
-        this.serv.getWeatherHome().then((response) => {
+        this.serv.getWeatherByCity().then((response) => {
             this.setState({weather: response.data});
         })
         this.setState({page: 'default'});
@@ -28,7 +27,7 @@ class HomePage extends React.Component{
                     (        
                         <LinearGradient style={{flex:1}} colors={['#336eb0', '#5791e7', '#5791e7']}>
                             <TouchableOpacity style={{padding: 15, alignItems: 'center',flex:1,justifyContent:"center"}} onPress={() => this.setState({page:'description'})}>
-                                <Text style={{textAlign:"center",fontSize:25,color:"white"}}>{this.state.weather.weather[0].main}</Text>
+                                <Text style={{textAlign:"center",fontSize:25,color:"white"}}>{this.state.weather.name}</Text>
                                 <ImgWeather icon={this.state.weather.weather[0].icon}/>
                                 <Text style={{fontSize:20,textAlign:"center",color:"white"}}>{this.state.weather.main.temp}°C</Text> 
                             </TouchableOpacity>

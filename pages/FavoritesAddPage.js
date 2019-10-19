@@ -1,19 +1,45 @@
 import React from 'react';
-import {Button, View,TextInput, Image} from 'react-native';
+import {Button, View,TextInput, AsyncStorage} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
+import WeatherService from '../services/weather-service';
+
+// const CityList = require("./city.list.json");
 
 class FavoritesAdd extends React.Component {
+
+    serv= new WeatherService()
+
     static navigationOptions={
         title: 'Ajouter',
     };
-    constructor(props) {
-        super(props);
-        this.state = {text: ''};
-      }
     
+    
+    state = {
+        cityName:'',
+    }
+
     onAddPress(){
-        alert(this.state.text);
-        this.props.navigation.pop();
+        if(this.state.cityName != ''){
+            this.serv.getWeatherByCity(this.state.cityName).then(()=>{
+                AsyncStorage.getItem('cities').then(data =>{
+                    let tab = [];
+                    if(data !== null){
+                        tab = JSON.parse(data)
+                    }
+                    tab.push(this.state.cityName);
+                    AsyncStorage.setItem('cities',
+                        JSON.stringify(tab)).then(()=>{
+                        this.props.navigation.goBack();
+                    }).catch((err)=>{
+                        alert(err)
+                    })
+                })            
+            }).catch(err=>{
+                alert(`Pas de données pour la ville ${this.state.cityName}`)
+            })
+        }else{
+            alert("Pas de donnée")
+        }
     }
 
     render(){
@@ -23,8 +49,8 @@ class FavoritesAdd extends React.Component {
                 <TextInput
                 style={{height: 40,width:120, fontSize:25,textAlign:"center",borderWidth: 1}}
                 placeholder="Monaco..."
-                onChangeText={(text) => this.setState({text})}
-                value={this.state.text}
+                onChangeText={(cityName) => this.setState({cityName})}
+                value={this.state.cityName}
                 />
                 </View>
                 <Button

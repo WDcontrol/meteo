@@ -1,9 +1,18 @@
 import React from 'react';
-import {Text, View, Image, FlatList, Button} from 'react-native';
+import {Text, View, Image, FlatList, Button,AsyncStorage} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { NavigationEvents } from 'react-navigation';
+import WeatherService from '../services/weather-service';
 
 class FavoritesPage extends React.Component{
+    serv = new WeatherService();    
+    
+    state ={
+        cities:[],
+        citiesData:[],
+    };
+    
     static navigationOptions= ({navigation}) => {
         return {
             title: 'Favoris',
@@ -11,41 +20,40 @@ class FavoritesPage extends React.Component{
                 <Icon onPress={() => navigation.push('FavoritesAdd')} style={{paddingRight:10}} size={25} name={'ios-add'}></Icon>
             )
         }
-    };
-
-    state ={
-        cities:null,
-    };
-    componentDidMount(){
-        this.setState({
-            cities:[
-                {name: 'Marseille', temp: 29, main:'clear' },
-                {name: 'New York', temp: 13, main:'clear'},
-                {name: 'Pekin', temp: 12, main:'clear'}
-            ]
-        });
     }
-    
+
+    refresh(){
+        this.setState({citiesData:[]});
+        AsyncStorage.getItem('cities').then((data)=>{
+            this.setState({cities: JSON.parse(data)});
+            for(var i =0;i<this.state.cities.length;i++){
+                this.serv.getWeatherByCity(this.state.cities[i]).then((response)=>{
+                    this.setState({
+                        citiesData:[...this.state.citiesData, {name:response.data.name,temp:response.data.main.temp}]
+                    })
+                }).catch((error)=>{
+                    console.log(error)
+                })
+            }
+        })
+    }
+
     render(){
         return(
-            this.state.cities != null ?  
-            (
-                <LinearGradient style={{flex:1}} colors={['#336eb0', '#5791e7', '#5791e7']}>
+            <LinearGradient style={{flex:1}} colors={['#336eb0', '#5791e7', '#5791e7']}>
                 <View style={{flex:1}}>
+                    <NavigationEvents onDidFocus={() => this.refresh()} />
                     <FlatList
-                        data={this.state.cities}
-                        renderItem={({ item }) => (
+                        data={this.state.citiesData}
+                        renderItem={({item}) => (
                             <View style={{flex:1,flexDirection:"row",justifyContent:"space-between",padding:15}}>
                                 <Text style={{fontSize:23,color:"white"}}>{item.name}</Text>
                                 <Text style={{fontSize:23,color:"white"}}>{item.temp}°C</Text>
                             </View>
-                          )}
+                        )}
                         />
-                </View> 
+                </View>
             </LinearGradient>
-            ):(
-                <View></View>
-            )
         )
     }
 }
