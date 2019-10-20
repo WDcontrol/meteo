@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, View, Image, FlatList, Button,AsyncStorage} from 'react-native';
+import Swipeout from 'react-native-swipeout';
+import {Text, View, Image, FlatList,AsyncStorage} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationEvents } from 'react-navigation';
@@ -21,6 +22,56 @@ class FavoritesPage extends React.Component{
             )
         }
     }
+    
+    render(){
+        return(
+            <LinearGradient style={{flex:1}} colors={['#336eb0', '#5791e7', '#5791e7']}>
+                <View style={{flex:1}}>
+                    <NavigationEvents onDidFocus={() => this.refresh()} />
+                    <FlatList
+                        data={this.state.citiesData}
+                        renderItem={({item}) => (
+                        <Swipeout
+                        style={{flex:1}}
+                        right={this.swipeBtns(item)}
+                        autoClose='true'
+                        backgroundColor= 'transparent'>                                    
+                            <View style={{flex:1 ,flexDirection:"row",justifyContent:"space-between",padding:15}}>
+                                <Text style={{fontSize:23,color:"white"}}>{item.name}</Text>
+                                <Text style={{fontSize:23,color:"white"}}>{Math.round(item.temp)}°C</Text>
+                            </View>
+                        </Swipeout>
+                    )}/>
+                </View>
+            </LinearGradient>
+        )
+    }
+
+    deleteCity(item){
+        var indexToDelete = this.state.cities.indexOf(item.name);
+        if (indexToDelete > -1){
+            this.setState({
+                cities: this.state.cities.splice(indexToDelete, 1)
+            })
+        }
+        AsyncStorage.setItem('cities',
+            JSON.stringify(this.state.cities)).then(()=>{
+                this.refresh();
+        }).catch((err)=>{
+            alert(err);
+        })
+    }
+
+    swipeBtns(item) {
+        return (
+            [{
+                text: 'Supprimer',
+                backgroundColor: 'red',
+                underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+                onPress: () => { this.deleteCity(item) }
+            }]
+        )
+    }
 
     refresh(){
         this.setState({citiesData:[]});
@@ -36,25 +87,6 @@ class FavoritesPage extends React.Component{
                 })
             }
         })
-    }
-
-    render(){
-        return(
-            <LinearGradient style={{flex:1}} colors={['#336eb0', '#5791e7', '#5791e7']}>
-                <View style={{flex:1}}>
-                    <NavigationEvents onDidFocus={() => this.refresh()} />
-                    <FlatList
-                        data={this.state.citiesData}
-                        renderItem={({item}) => (
-                            <View style={{flex:1,flexDirection:"row",justifyContent:"space-between",padding:15}}>
-                                <Text style={{fontSize:23,color:"white"}}>{item.name}</Text>
-                                <Text style={{fontSize:23,color:"white"}}>{item.temp}°C</Text>
-                            </View>
-                        )}
-                        />
-                </View>
-            </LinearGradient>
-        )
     }
 }
 

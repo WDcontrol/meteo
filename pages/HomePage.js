@@ -29,14 +29,14 @@ class HomePage extends React.Component{
                             <TouchableOpacity style={{padding: 15, alignItems: 'center',flex:1,justifyContent:"center"}} onPress={() => this.setState({page:'description'})}>
                                 <Text style={{textAlign:"center",fontSize:25,color:"white"}}>{this.state.weather.name}</Text>
                                 <ImgWeather icon={this.state.weather.weather[0].icon}/>
-                                <Text style={{fontSize:20,textAlign:"center",color:"white"}}>{this.state.weather.main.temp}°C</Text> 
+                                <Text style={{fontSize:20,textAlign:"center",color:"white"}}>{Math.round(this.state.weather.main.temp)}°C</Text> 
                             </TouchableOpacity>
                         </LinearGradient>
                     ):(
                         <TouchableOpacity style={{flex:1, justifyContent:"center"}} onPress={() => this.setState({page:'default'})}>
-                            <Text style={{fontSize:20,textAlign:"center"}}>Minimale : {this.state.weather.main.temp_min}°C</Text>
-                            <Text style={{fontSize:20,textAlign:"center"}}>Maximale : {this.state.weather.main.temp_max}°C</Text>
-                            <Text style={{fontSize:20,textAlign:"center"}}>pression : {this.state.weather.main.pressure}°C</Text>
+                            <Text style={{fontSize:20,textAlign:"center"}}>Minimale : {Math.round(this.state.weather.main.temp_min)}°C</Text>
+                            <Text style={{fontSize:20,textAlign:"center"}}>Maximale : {Math.round(this.state.weather.main.temp_max)}°C</Text>
+                            <Text style={{fontSize:20,textAlign:"center"}}>pression : {this.state.weather.main.pressure}</Text>
                             <Text style={{fontSize:20,textAlign:"center"}}>Vitesse du vent : {this.state.weather.wind.speed} km/h</Text>
                             <Sunrise time={this.state.weather.sys.sunrise}/>
                             <Sunset time={this.state.weather.sys.sunset}/>
@@ -49,9 +49,6 @@ class HomePage extends React.Component{
         );
     }
 }
-
-
-
 const Sunrise = (props) =>{
     const dt = new Date(props.time * 1000)
     return(

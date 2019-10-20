@@ -20,20 +20,20 @@ class FavoritesAdd extends React.Component {
 
     onAddPress(){
         if(this.state.cityName != ''){
-            this.serv.getWeatherByCity(this.state.cityName).then(()=>{
-                AsyncStorage.getItem('cities').then(data =>{
+            this.serv.getWeatherByCity(this.state.cityName).then((res)=>{
+                AsyncStorage.getItem('cities').then(cities =>{
                     let tab = [];
-                    if(data !== null){
-                        tab = JSON.parse(data)
+                    if(cities !== null){
+                        tab = JSON.parse(cities);
                     }
-                    tab.push(this.state.cityName);
+                    tab.push(res.data.name);
                     AsyncStorage.setItem('cities',
                         JSON.stringify(tab)).then(()=>{
                         this.props.navigation.goBack();
                     }).catch((err)=>{
                         alert(err)
                     })
-                })            
+                })
             }).catch(err=>{
                 alert(`Pas de données pour la ville ${this.state.cityName}`)
             })
@@ -46,12 +46,13 @@ class FavoritesAdd extends React.Component {
         return(
             <LinearGradient style={{flex:1, justifyContent:"center"}} colors={['#336eb0', '#5791e7', '#5791e7']}>
                 <View style={{alignSelf:"center", alignContent:"center"}}>
-                <TextInput
-                style={{height: 40,width:120, fontSize:25,textAlign:"center",borderWidth: 1}}
-                placeholder="Monaco..."
-                onChangeText={(cityName) => this.setState({cityName})}
-                value={this.state.cityName}
-                />
+                    <TextInput
+                    style={{height: 40,width:120, fontSize:25,textAlign:"center",borderBottomWidth: 1}}
+                    placeholder="Monaco"
+                    onChangeText={(cityName) => this.setState({cityName})}
+                    value={this.state.cityName}
+                    autoFocus="True"
+                    />
                 </View>
                 <Button
                 title="Ajouter"
