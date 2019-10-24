@@ -1,17 +1,17 @@
 import React from 'react';
-import Swipeout from 'react-native-swipeout';
-import { Text, View, Image, FlatList, AsyncStorage } from 'react-native';
+import { Text, View, FlatList, AsyncStorage } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NavigationEvents } from 'react-navigation';
 import WeatherService from '../services/weather-service';
+import FavoritesItem from '../components/FavoritesItem'
 
 class FavoritesPage extends React.Component {
   serv = new WeatherService();
 
   state = {
     cities: [],
-    citiesData: []
+    citiesData: [],
   };
 
   static navigationOptions = ({ navigation }) => {
@@ -19,13 +19,32 @@ class FavoritesPage extends React.Component {
       title: 'Favoris',
       headerRight: (
         <Icon
-          onPress={() => navigation.push('FavoritesAdd')}
+          onPress={() => {
+            // console.log(navigation);
+            navigation.state.params.count < 15 ? navigation.push('FavoritesAdd'): alert("Vous ne pouvez ajouter que 15 favoris")
+          }}
+
+          // onPress={
+          //   ()=>{navigation.push('FavoritesAdd')}
+          // }
           style={{ paddingRight: 10 }}
           size={25}
           name={'ios-add'}></Icon>
       )
     };
   };
+
+  refresh(){
+    this.setState({refreshing:true});
+    AsyncStorage.getItem('cities').then((date)=>{
+      this.props.navigation.setParams({ count: JSON.parse(data).length })
+      this.setState({cities:JSON.parse(data).sort(), refreshing:false})
+    })
+  }
+  
+  // componentDidMount(){
+  //   this.props.navigation.setParams({ length: this.state.cities.length });
+  // }
 
   render() {
     return (
@@ -35,28 +54,11 @@ class FavoritesPage extends React.Component {
         <View style={{ flex: 1 }}>
           <NavigationEvents onDidFocus={() => this.refresh()} />
           <FlatList
+            // onRefresh={()=> this.refresh()}
+            keyExtractor = {item => item.name} 
             data={this.state.citiesData}
             renderItem={({ item }) => (
-              <Swipeout
-                style={{ flex: 1 }}
-                right={this.swipeBtns(item)}
-                autoClose='true'
-                backgroundColor='transparent'>
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    padding: 15
-                  }}>
-                  <Text style={{ fontSize: 23, color: 'white' }}>
-                    {item.name}
-                  </Text>
-                  <Text style={{ fontSize: 23, color: 'white' }}>
-                    {Math.round(item.temp)}°C
-                  </Text>
-                </View>
-              </Swipeout>
+              <FavoritesItem item={item} onDelete={()=>{this.deleteCity(item)}}></FavoritesItem>
             )}
           />
         </View>
@@ -80,23 +82,11 @@ class FavoritesPage extends React.Component {
       });
   }
 
-  swipeBtns(item) {
-    return [
-      {
-        text: 'Supprimer',
-        backgroundColor: 'red',
-        underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
-        onPress: () => {
-          this.deleteCity(item);
-        }
-      }
-    ];
-  }
-
   refresh() {
     this.setState({ citiesData: [] });
     AsyncStorage.getItem('cities').then((data) => {
       this.setState({ cities: JSON.parse(data) });
+      this.props.navigation.setParams({ count: JSON.parse(data).length })
       for (var i = 0; i < this.state.cities.length; i++) {
         this.serv
           .getWeatherByCity(this.state.cities[i])
@@ -104,7 +94,7 @@ class FavoritesPage extends React.Component {
             this.setState({
               citiesData: [
                 ...this.state.citiesData,
-                { name: response.data.name, temp: response.data.main.temp }
+                { name: response.data.name, temp: response.data.main.temp, icon: response.data.weather[0].icon }
               ]
             });
           })
@@ -115,14 +105,5 @@ class FavoritesPage extends React.Component {
     });
   }
 }
-
-const ImgWeather = (props) => {
-  return (
-    <Image
-      style={{ height: 100, width: 100, alignSelf: 'center' }}
-      source={{ uri: `https://openweathermap.org/img/wn/${props.icon}@2x.png` }}
-    />
-  );
-};
 
 export default FavoritesPage;

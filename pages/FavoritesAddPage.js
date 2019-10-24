@@ -7,13 +7,12 @@ import WeatherService from '../services/weather-service';
 
 class FavoritesAdd extends React.Component {
 
-    serv= new WeatherService()
+    serv= new WeatherService();
 
     static navigationOptions={
         title: 'Ajouter',
     };
-    
-    
+
     state = {
         cityName:'',
     }

@@ -56,7 +56,7 @@ class HomePage extends React.Component {
             tempKey='Maximale : '
             temp={this.state.weather.main.temp_max}></Temperature>
           <Text style={{ fontSize: 20, textAlign: 'center' }}>
-            pression : {this.state.weather.main.pressure}
+            Pression : {this.state.weather.main.pressure}
           </Text>
           <Text style={{ fontSize: 20, textAlign: 'center' }}>
             Vitesse du vent : {this.state.weather.wind.speed} km/h

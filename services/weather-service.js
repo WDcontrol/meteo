@@ -6,8 +6,11 @@ const key='b5bb72c72d099d41ac283611eb47592a'
 const url=`https://api.openweathermap.org/data/2.5/weather?appid=${key}&units=metric`
 
 class WeatherService{
-    getWeatherByCity(city="Paris"){
-        return axios.get(`${url}&q=${city}`)
+    getWeatherByCity(city="Paris",country){
+        if(country){
+            country = "," + country
+        }
+        return axios.get(`${url}&q=${city},${country}`)
     }
 }
 
