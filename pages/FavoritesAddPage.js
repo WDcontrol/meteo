@@ -26,13 +26,17 @@ class FavoritesAdd extends React.Component {
                     if(cities !== null){
                         tab = JSON.parse(cities);
                     }
-                    tab.push(res.data.name);
-                    AsyncStorage.setItem('cities',
-                        JSON.stringify(tab)).then(()=>{
-                        this.props.navigation.goBack();
-                    }).catch((err)=>{
-                        alert(err)
-                    })
+                    if(tab.length<15){
+                        tab.push(res.data.name);
+                        AsyncStorage.setItem('cities',
+                            JSON.stringify(tab)).then(()=>{
+                            this.props.navigation.goBack();
+                        }).catch((err)=>{
+                            alert(err)
+                        })
+                    }else{
+                        alert(`Vous avez atteint le nombre de favoris maximum (15)`)
+                    }
                 })
             }).catch(err=>{
                 alert(`Pas de données pour la ville ${this.state.cityName}`)

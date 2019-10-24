@@ -10,7 +10,7 @@ class Loading extends React.Component {
     render(){
         return(
             <View style={{flex: 1,justifyContent:'center',alignItems:'center'}}>
-                <ActivityIndicator color={this.props.displayColor } size='large'/>
+                <ActivityIndicator color={this.props.displayColor} size='large'/>
                 {this.props.children}
             </View>
         )
