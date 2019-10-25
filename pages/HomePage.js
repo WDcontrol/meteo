@@ -1,11 +1,12 @@
-import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React from 'react'
 import WeatherService from '../services/weather-service';
 import LoadingComponent from '../components/Loading';
 import { LinearGradient } from 'expo-linear-gradient';
 import Temperature from '../components/Temperature';
 import Sun from '../components/Sun';
 import ImgWeather from '../components/ImgWeather';
+import { connect } from 'react-redux';
 
 class HomePage extends React.Component {
   serv = new WeatherService();
@@ -50,13 +51,15 @@ class HomePage extends React.Component {
           style={{ flex: 1, justifyContent: 'center' }}
           onPress={() => this.setState({ page: 'default' })}>
           <Temperature
+            style={styles.textStyles}
             tempKey='Minimale : '
             temp={this.state.weather.main.temp_min}></Temperature>
           <Temperature
+            style={styles.textStyles}
             tempKey='Maximale : '
             temp={this.state.weather.main.temp_max}></Temperature>
           <Text style={{ fontSize: 20, textAlign: 'center' }}>
-            Pression : {this.state.weather.main.pressure}
+            pression : {this.state.weather.main.pressure}
           </Text>
           <Text style={{ fontSize: 20, textAlign: 'center' }}>
             Vitesse du vent : {this.state.weather.wind.speed} km/h
@@ -76,13 +79,15 @@ class HomePage extends React.Component {
   }
 }
 
-// const ImgWeather = (props) => {
-//   return (
-//     <Image
-//       style={{ height: 100, width: 100, alignSelf: 'center' }}
-//       source={{ uri: `https://openweathermap.org/img/wn/${props.icon}@2x.png` }}
-//     />
-//   );
-// };
+const styles = StyleSheet.create({
+  textStyles: {
+    color: 'black'
+  }
+});
 
-export default HomePage;
+const mapStateToProps = (state) => {
+  const { weather } = state
+  return { weather }
+};
+
+export default connect(mapStateToProps)(HomePage);

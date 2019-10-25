@@ -12,6 +12,7 @@ class FavoritesPage extends React.Component {
   state = {
     cities: [],
     citiesData: [],
+    refresh:false,
   };
 
   static navigationOptions = ({ navigation }) => {
@@ -20,31 +21,14 @@ class FavoritesPage extends React.Component {
       headerRight: (
         <Icon
           onPress={() => {
-            // console.log(navigation);
             navigation.state.params.count < 15 ? navigation.push('FavoritesAdd'): alert("Vous ne pouvez ajouter que 15 favoris")
           }}
-
-          // onPress={
-          //   ()=>{navigation.push('FavoritesAdd')}
-          // }
           style={{ paddingRight: 10 }}
           size={25}
           name={'ios-add'}></Icon>
       )
     };
   };
-
-  refresh(){
-    this.setState({refreshing:true});
-    AsyncStorage.getItem('cities').then((date)=>{
-      this.props.navigation.setParams({ count: JSON.parse(data).length })
-      this.setState({cities:JSON.parse(data).sort(), refreshing:false})
-    })
-  }
-  
-  // componentDidMount(){
-  //   this.props.navigation.setParams({ length: this.state.cities.length });
-  // }
 
   render() {
     return (
@@ -54,11 +38,10 @@ class FavoritesPage extends React.Component {
         <View style={{ flex: 1 }}>
           <NavigationEvents onDidFocus={() => this.refresh()} />
           <FlatList
-            // onRefresh={()=> this.refresh()}
-            keyExtractor = {item => item.name} 
-            data={this.state.citiesData}
-            renderItem={({ item }) => (
-              <FavoritesItem item={item} onDelete={()=>{this.deleteCity(item)}}></FavoritesItem>
+            data={this.state.cities}
+            extraData={this.state.refresh}
+            renderItem={({item}) => (
+                <FavoritesItem key={item} city={item} onDelete={()=>{this.deleteCity(item)}}></FavoritesItem>
             )}
           />
         </View>
@@ -67,7 +50,7 @@ class FavoritesPage extends React.Component {
   }
 
   deleteCity(item) {
-    let indexToDelete = this.state.cities.indexOf(item.name);
+    let indexToDelete = this.state.cities.indexOf(item);
     if (indexToDelete > -1) {
       this.setState({
         cities: this.state.cities.splice(indexToDelete, 1)
@@ -82,27 +65,23 @@ class FavoritesPage extends React.Component {
       });
   }
 
-  refresh() {
-    this.setState({ citiesData: [] });
+  refresh(){
+    // AsyncStorage.setItem('cities',JSON.stringify(["Paris","Nantes","Nice","Amiens"]))
     AsyncStorage.getItem('cities').then((data) => {
-      this.setState({ cities: JSON.parse(data) });
-      this.props.navigation.setParams({ count: JSON.parse(data).length })
-      for (var i = 0; i < this.state.cities.length; i++) {
-        this.serv
-          .getWeatherByCity(this.state.cities[i])
-          .then((response) => {
-            this.setState({
-              citiesData: [
-                ...this.state.citiesData,
-                { name: response.data.name, temp: response.data.main.temp, icon: response.data.weather[0].icon }
-              ]
-            });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      if(data != null){
+        this.setState({
+          cities: JSON.parse(data).sort()
+        })
+        console.log("ref",JSON.parse(data))
+        
+        this.props.navigation.setParams({ count: JSON.parse(data).length })
+        console.log(this.state.cities)
       }
-    });
+      else{
+        this.props.navigation.setParams({ count: 0 })
+      }
+      
+    }).catch((err)=>(alert(err)))
   }
 }
 

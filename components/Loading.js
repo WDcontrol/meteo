@@ -3,9 +3,9 @@ import {Text,View,ActivityIndicator} from 'react-native';
 import PropTypes from 'prop-types'
 
 class Loading extends React.Component {
-    static propTypes = {
-        displayColor: PropTypes.string.isRequired
-    }
+    // static propTypes = {
+        // displayColor: PropTypes.string.isRequired
+    // }
 
     render(){
         return(

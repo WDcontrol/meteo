@@ -1,13 +1,13 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 
 class Temperature extends React.Component {
   render() {
     return (
-      <Text style={styles.textStyles}>
-        {this.props.tempKey}
-        {Math.round(this.props.temp)} °C
-      </Text>
+        <Text style={{...styles.textStyles,...this.props.style}}>
+          {this.props.tempKey}
+          {Math.round(this.props.temp)} °C
+        </Text>
     );
   }
 }
@@ -15,7 +15,8 @@ class Temperature extends React.Component {
 const styles = StyleSheet.create({
   textStyles: {
     textAlign: 'center',
-    fontSize: 20
+    fontSize: 20,
+    color:"white"
   }
 });
 
