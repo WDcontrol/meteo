@@ -2,13 +2,14 @@ import HomePage from "../pages/HomePage";
 import SettingsPage from "../pages/SettingsPage";
 import FavoritesPage from "../pages/FavoritesPage";
 import FavoritesAddPage from "../pages/FavoritesAddPage";
+import HomeDetailsPage from "../pages/HomeDetailsPage"
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import React from 'react';
 import { createStackNavigator } from "react-navigation-stack";
 
-const favoritesNavigator = 
-    createStackNavigator({
+const favoritesNavigator = createStackNavigator(
+    {
         Favorites:{
             screen:FavoritesPage
         },
@@ -29,6 +30,29 @@ const favoritesNavigator =
         }
     }
 );
+
+const HomeNavigator = createStackNavigator(
+    {
+        Home:{
+            screen : HomePage,
+        },
+        HomeDetails:{
+            screen: HomeDetailsPage
+        },
+    },
+    {
+        initialRouteName:'Home',
+        defaultNavigationOptions:{
+            headerStyle: {
+                backgroundColor:'white',
+            },
+            headerTintColor:'black',
+            headerTitleStyle:{
+                fontWeight: 'bold'
+            }
+        }
+    }
+)
 
 const tabNavigator = createMaterialBottomTabNavigator(
     {
@@ -64,7 +88,7 @@ const tabNavigator = createMaterialBottomTabNavigator(
         }
     },
     { 
-        initialRouteName: 'Favorites',
+        initialRouteName: 'Home',
         activeColor:'black',
         inactiveColor:'grey',
     }

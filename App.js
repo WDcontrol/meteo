@@ -11,17 +11,17 @@ const rootReducer = combineReducers({
   favorites : FavoritesReducer,
 });
 
+console.disableYellowBox = true;
+
 const store = createStore(rootReducer);
 
-class App extends React.Component {
-  render() {
+App = props => {
     console.log(this.state)
     return (
       <Provider store={ store }>
         <AppNavigator></AppNavigator>
       </Provider>
     );
-  }
 }
 
 export default App;

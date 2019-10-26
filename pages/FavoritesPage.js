@@ -21,7 +21,7 @@ class FavoritesPage extends React.Component {
       headerRight: (
         <Icon
           onPress={() => {
-            navigation.state.params.count < 15 ? navigation.push('FavoritesAdd'): alert("Vous ne pouvez ajouter que 15 favoris")
+            navigation.state.params.count < 15 ? navigation.push('FavoritesAdd') : alert("Vous ne pouvez ajouter que 15 favoris")
           }}
           style={{ paddingRight: 10 }}
           size={25}
@@ -39,7 +39,7 @@ class FavoritesPage extends React.Component {
           <NavigationEvents onDidFocus={() => this.refresh()} />
           <FlatList
             data={this.state.cities}
-            extraData={this.state.refresh}
+            keyExtractor={(item) => item}
             renderItem={({item}) => (
                 <FavoritesItem key={item} city={item} onDelete={()=>{this.deleteCity(item)}}></FavoritesItem>
             )}
@@ -70,12 +70,9 @@ class FavoritesPage extends React.Component {
     AsyncStorage.getItem('cities').then((data) => {
       if(data != null){
         this.setState({
-          cities: JSON.parse(data).sort()
-        })
-        console.log("ref",JSON.parse(data))
-        
+          cities: JSON.parse(data).sort(),
+        }) 
         this.props.navigation.setParams({ count: JSON.parse(data).length })
-        console.log(this.state.cities)
       }
       else{
         this.props.navigation.setParams({ count: 0 })
